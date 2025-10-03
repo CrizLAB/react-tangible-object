@@ -1,0 +1,85 @@
+{
+  "name": "@ctreg-docc-digit/react-tangible-object",
+  "version": "1.0.2",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CrizLAB/react-tangible-object.git"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "author": "Aurélien Marchal, Louis-Pierre Bergé, Valentin Ortalo",
+  "module": "dist/react-tangible-object.esm.js",
+  "size-limit": [
+    {
+      "path": "dist/react-tangible-object.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/react-tangible-object.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^8.2.6",
+    "@storybook/addon-essentials": "^8.6.12",
+    "@storybook/addon-interactions": "^8.6.12",
+    "@storybook/addon-onboarding": "^8.6.12",
+    "@storybook/addon-webpack5-compiler-swc": "^3.0.0",
+    "@storybook/blocks": "^8.6.12",
+    "@storybook/react": "^8.6.12",
+    "@storybook/react-webpack5": "^8.6.12",
+    "@storybook/test": "^8.6.12",
+    "@types/react": "^19.1.3",
+    "chromatic": "^13.1.2",
+    "husky": "^8.0.3",
+    "react-circular-progressbar": "^2.2.0",
+    "size-limit": "^8.2.6",
+    "storybook": "^8.6.12",
+    "ts-node": "^10.9.2",
+    "tsdx": "^0.14.1",
+    "typescript": "^5.7.3",
+    "zustand": "^5.0.8"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/utilities": "^3.2.2",
+    "ts-matrix": "^1.3.2"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

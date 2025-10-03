@@ -1,0 +1,10 @@
+*.log
+.DS_Store
+node_modules
+.cache
+dist
+.parcel-cache
+cea-ca-bundle.crt
+.npmrc
+*storybook.log
+storybook-static
