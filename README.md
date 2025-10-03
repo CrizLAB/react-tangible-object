@@ -4,11 +4,6 @@
 
 #### Authors : Aurélien Marchal, Louis-Pierre Bergé, Philippe Limousin, Radhouene Azzabi
 
-TODO: 
-- Header on files with copyright
-- Author files
-- Double LICENCE LGPL et CCIL-C et préciser qu'on laisse le choix
-
 Link to related scientific paper coming soon
 
 ![Tangible objects](images/TO_Recto.jpg)

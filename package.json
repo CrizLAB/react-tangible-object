@@ -1,7 +1,7 @@
 {
   "name": "@ctreg-docc-digit/react-tangible-object",
   "version": "1.0.3",
-  "license": "MIT",
+  "license": "LGPL-3.0-or-later",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "repository": {
