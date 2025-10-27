@@ -3,14 +3,16 @@ import { TOCanvas, TOContext, TOInput, TOSimulator} from '../components';
 import { useTOContext } from '../hooks';
 import { buildStyles, CircularProgressbar} from 'react-circular-progressbar';
 import { useTangibleObjectDataStore } from './useTangibleObjectDataStore';
+import { TouchHandlingMode } from '../components/TOInput/TOInput';
 
 
 
 interface UsingRotationExampleTOProps{
-    
+    precision : number;
+    touchHandlingMode : TouchHandlingMode
 }
 
-export const UsingRotationExampleTO : React.FC<UsingRotationExampleTOProps> = ({} : UsingRotationExampleTOProps) => {
+export const UsingRotationExampleTO : React.FC<UsingRotationExampleTOProps> = ({precision, touchHandlingMode} : UsingRotationExampleTOProps) => {
 
 
     const tangibleObjectDataList = useTangibleObjectDataStore((state) => state.tangibleObjectDataList)
@@ -19,7 +21,7 @@ export const UsingRotationExampleTO : React.FC<UsingRotationExampleTOProps> = ({
     <div>
         <TOContext>
             <TOSimulator tangibleObjectDataList={tangibleObjectDataList}>
-                    <TOInput precision={100} tangibleObjectDataList={tangibleObjectDataList}>
+                <TOInput precision={precision} tangibleObjectDataList={tangibleObjectDataList} touchHandlingMode={touchHandlingMode} simulateClicks={true}>
                         <TOCanvas/>
                         <CircularProgessBarExample/>
                     </TOInput>

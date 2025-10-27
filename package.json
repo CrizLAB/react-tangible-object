@@ -23,8 +23,8 @@
     "build": "tsdx build",
     "test": "tsdx test --passWithNoTests",
     "lint": "tsdx lint",
-    "prepare": "tsdx build",
     "size": "size-limit",
+    "prepare": "tsdx build",
     "analyze": "size-limit --why",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"

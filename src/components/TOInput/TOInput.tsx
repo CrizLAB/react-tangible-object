@@ -4,6 +4,7 @@ import { EndEvent, MoveEvent, StartEvent, TangibleObject, TangibleObjectData } f
 import { TOMonitorContext, useTOMonitorProvider } from '../TOMonitor';
 import {Matrix} from 'ts-matrix'
 
+
 export type TouchHandlingMode = "Standard" | "TOOnly" | "RetainStartEvent"
 
 interface TouchInfo{
@@ -40,6 +41,10 @@ export const TOInput = function TOInput({ children, precision, touchHandlingMode
   const touchInfos = useRef<Record<number, TouchInfo>>({});
 
   const [touchInfosState, setTouchInfosState] = useState<Record<number, TouchInfo>>({});
+
+  const lastSetTangibleObjetsDate = useRef(0);
+
+  const delayBetweenSetTangibleObjets = 10;
   
 
   function handleTouchStart(event : React.TouchEvent){
@@ -282,7 +287,12 @@ export const TOInput = function TOInput({ children, precision, touchHandlingMode
 
     //Update tangibleObjects if at least on TO moved
     if(tangibleObjectsToMove.length > 0){
-      setTangibleObjets([... tangibleObjects]);
+      //throttling setTangibleObjets
+      const now = Date.now();
+      if(now - lastSetTangibleObjetsDate.current >= delayBetweenSetTangibleObjets){
+        lastSetTangibleObjetsDate.current = now;
+        setTangibleObjets([... tangibleObjects]);
+      }
     }
 
     //stop the propagation because there is a least one TO in tangibleObjects so the touch identifiers need to be shifted

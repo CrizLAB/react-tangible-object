@@ -4,7 +4,7 @@
 
 #### Authors : Aurélien Marchal, Louis-Pierre Bergé, Philippe Limousin, Radhouene Azzabi
 
-Link to related scientific paper coming soon
+Scientific paper about the library (in french) https://hal.science/IHM-2025/hal-05311960v1
 
 ![Tangible objects](images/TO_Recto.jpg)
 
