@@ -1,4 +1,4 @@
-import React, {createContext, useRef, useState } from 'react';
+import React, {createContext, RefObject, useRef } from 'react';
 import { useTOContext } from '../../hooks';
 import { EndEvent, MoveEvent, StartEvent, TangibleObject, TangibleObjectData } from '../../types';
 import { TOMonitorContext, useTOMonitorProvider } from '../TOMonitor';
@@ -27,7 +27,7 @@ export interface Props {
 }
 
 //debug context
-export const TouchInfosContext = createContext<Record<number, TouchInfo>>({});
+export const TouchInfosContext = createContext<RefObject<Record<number, TouchInfo>> | undefined >(undefined);
 
 export const TOInput = function TOInput({ children, precision, touchHandlingMode = "Standard", tangibleObjectDataList, simulateClicks = false, maxDistanceForClick = 20}: Props) {
  
@@ -40,7 +40,6 @@ export const TOInput = function TOInput({ children, precision, touchHandlingMode
 
   const touchInfos = useRef<Record<number, TouchInfo>>({});
 
-  const [touchInfosState, setTouchInfosState] = useState<Record<number, TouchInfo>>({});
 
   const lastSetTangibleObjetsDate = useRef(0);
 
@@ -291,6 +290,7 @@ export const TOInput = function TOInput({ children, precision, touchHandlingMode
       const now = Date.now();
       if(now - lastSetTangibleObjetsDate.current >= delayBetweenSetTangibleObjets){
         lastSetTangibleObjetsDate.current = now;
+        console.log("Setting Tangible objects");
         setTangibleObjets([... tangibleObjects]);
       }
     }
@@ -344,7 +344,8 @@ export const TOInput = function TOInput({ children, precision, touchHandlingMode
           propagateTouchEvent("touchStart", [event.changedTouches[i].identifier], correspondingTouchStart.target);
         }
         
-        if(simulateClicks){
+        //Simulate click if there is at least one tangible object
+        if(simulateClicks && tangibleObjects && tangibleObjects.length > 0){
           let produceClick = touchStartAndTouchEndProduceClick(correspondingTouchStart, event.changedTouches[i]);
           if(produceClick){
             console.log("Click on ", event.target);
@@ -957,13 +958,13 @@ export const TOInput = function TOInput({ children, precision, touchHandlingMode
   
   
   return (
-    <TouchInfosContext.Provider value={touchInfosState}>
+    <TouchInfosContext.Provider value={touchInfos}>
       <TOMonitorContext.Provider value={registerMonitorListener}>
         <div
           id="input"
-          onTouchStartCapture={(event: React.TouchEvent<Element>) => {/*console.log(event);*/ if(event.isTrusted || event.altKey){ handleTouchStart(event); setTouchInfosState({...touchInfos.current});} else{/*console.log("altKey true", event)*/}}}
-          onTouchMoveCapture={(event: React.TouchEvent<Element>) => {/*console.log(event);*/ if(event.isTrusted|| event.altKey){handleTouchMove(event); setTouchInfosState({...touchInfos.current})} else{/*console.log("altKey true", event)*/}}}
-          onTouchEndCapture={(event: React.TouchEvent<Element>) => {/*console.log(event);*/ if(event.isTrusted|| event.altKey){ handleTouchEnd(event); setTouchInfosState({...touchInfos.current})} else{/*console.log("altKey true", event)*/}}}        
+          onTouchStartCapture={(event: React.TouchEvent<Element>) => {/*console.log(event);*/ if(event.isTrusted || event.altKey){ handleTouchStart(event);} else{/*console.log("altKey true", event)*/}}}
+          onTouchMoveCapture={(event: React.TouchEvent<Element>) => {/*console.log(event);*/ if(event.isTrusted|| event.altKey){handleTouchMove(event);} else{/*console.log("altKey true", event)*/}}}
+          onTouchEndCapture={(event: React.TouchEvent<Element>) => {/*console.log(event);*/ if(event.isTrusted|| event.altKey){ handleTouchEnd(event);} else{/*console.log("altKey true", event)*/}}}        
 
           //onTouchStart={(event) => console.log(event)}
           //onTouchMove={(event) => console.log(event)}

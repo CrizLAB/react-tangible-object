@@ -35,105 +35,76 @@ export function creaTriangle(
   );
 }
 
-export const TOCanvas : React.FC<TOCanvasProps> = ({zIndex = 1} : TOCanvasProps) => {
-  // a chaque fois que tangibleObjects est modifié, on recrée le triangle
+export const TOCanvas: React.FC<TOCanvasProps> = ({ zIndex = 1 }) => {
   const { tangibleObjects } = useTOContext();
   const touchInfosContext = useContext(TouchInfosContext);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  //const [style, setStyle] = useState<React.CSSProperties>({});
+  const frameRef = useRef<number>(0);
+
+  const tangibleObjectsRef = useRef(tangibleObjects);
+  const touchInfosRef = useRef(touchInfosContext);
+
+  tangibleObjectsRef.current = tangibleObjects;
+  touchInfosRef.current = touchInfosContext;
 
   useEffect(() => {
-
-    //console.log("tangibleObjectsCanvas", tangibleObjects);
     const ctx = canvasRef.current?.getContext('2d');
-    if (ctx) {
-      // clear tout le dessin et récupère un chemin de dessin
-      ctx.clearRect(0, 0, screen.width, screen.height);
+    if (!ctx) return;
 
-      ctx.fillStyle = "black";
-      ctx.font = "14px monospace";
-      ctx.textBaseline = "top";
+    const render = () => {
+      const { current: currentTouchInfos } = touchInfosRef;
+      const { current: currentTangibleObjects } = tangibleObjectsRef;
 
-      let y = 5; 
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-      Object.values(touchInfosContext).forEach((touchInfo) => {
-        const {
-          touchIdentifier,
-          lastTouch,
-          shiftedTouchIdentifier,
-          TOId,
-          touchStartOnHold,
-        } = touchInfo;
+      ctx.fillStyle = 'black';
+      ctx.font = '14px monospace';
+      ctx.textBaseline = 'top';
 
-        const line = `ID:${touchIdentifier}  X:${Math.round(lastTouch.clientX)}  Y:${Math.round(lastTouch.clientY)}  ShiftedIdentifier:${shiftedTouchIdentifier ?? "-"}  TOId:${TOId ?? "-"}  StartEventOnHold:${touchStartOnHold}`;
+      let y = 5;
+      const touchInfos = currentTouchInfos?.current;
+      if (touchInfos) {
+        Object.values(touchInfos).forEach((touchInfo) => {
+          const {
+            touchIdentifier,
+            lastTouch,
+            shiftedTouchIdentifier,
+            TOId,
+            touchStartOnHold,
+          } = touchInfo;
 
-        ctx.fillText(line, 5, y);
-        y += 18; 
-      });
+          const line = `ID:${touchIdentifier}  X:${Math.round(
+            lastTouch.clientX
+          )}  Y:${Math.round(lastTouch.clientY)}  ShiftedIdentifier:${
+            shiftedTouchIdentifier ?? '-'
+          }  TOId:${TOId ?? '-'}  StartEventOnHold:${touchStartOnHold}`;
 
-      if(tangibleObjects){
+          ctx.fillText(line, 5, y);
+          y += 18;
+        });
+      }
+
+      if (currentTangibleObjects && currentTangibleObjects.length > 0) {
         const path = new Path2D();
-
-        for (let i = 0; i < tangibleObjects.length; i++) {        
+        for (let i = 0; i < currentTangibleObjects.length; i++) {
           creaTriangle(
             ctx,
             path,
-            tangibleObjects[i].triangle,
-            tangibleObjects[i].angle
+            currentTangibleObjects[i].triangle,
+            currentTangibleObjects[i].angle
           );
         }
       }
-      
-    }
 
-  }, [tangibleObjects, touchInfosContext]);
-
-
-  /*
-
-  useEffect(() => {
-
-    const updateCanvasPosition = () => {
-      
-
-      const target = targetRef.current;
-      const canvas = canvasRef.current;
-      if (!target || !canvas) return;
-
-      const rect = target.getBoundingClientRect();
-
-      setStyle({
-        position: 'absolute',
-        width: `${rect.width}px`,
-        height: `${rect.height}px`,
-        pointerEvents: 'none',
-        border: "2px solid red",
-        transform: getComputedStyle(target).transform,
-        zIndex: zIndex,
-      });
-
-      canvas.width = rect.width;
-      canvas.height = rect.height;
+      frameRef.current = requestAnimationFrame(render);
     };
 
-    updateCanvasPosition();
-
-    const resizeObserver = new ResizeObserver(updateCanvasPosition);
-    if (targetRef.current) {
-      resizeObserver.observe(targetRef.current);
-    }
-
-    window.addEventListener('scroll', updateCanvasPosition);
-    window.addEventListener('resize', updateCanvasPosition);
+    frameRef.current = requestAnimationFrame(render);
 
     return () => {
-      window.removeEventListener('scroll', updateCanvasPosition);
-      window.removeEventListener('resize', updateCanvasPosition);
-      resizeObserver.disconnect();
+      if (frameRef.current) cancelAnimationFrame(frameRef.current);
     };
-  }, [targetRef]);
-
-  */
+  }, []);
 
   return (
     <canvas
@@ -143,28 +114,14 @@ export const TOCanvas : React.FC<TOCanvasProps> = ({zIndex = 1} : TOCanvasProps)
       height={window.innerHeight}
       ref={canvasRef}
       style={{
-        height: "100vh",
-        width : "100vw",
+        height: '100vh',
+        width: '100vw',
         position: 'absolute',
         pointerEvents: 'none',
-        
-        border: "2px solid red",
-        boxSizing: "border-box",
-        zIndex: zIndex,
+        border: '2px solid red',
+        boxSizing: 'border-box',
+        zIndex,
       }}
     />
   );
 };
-
-// if (C.x > mAB.x && C.y > mAB.y) {
-//   path.lineTo(C.x + k, C.y + k);
-//
-// if (C.x > mAB.x && C.y < mAB.y) {
-//   path.lineTo(C.x + k, C.y - k);
-// }
-// if (C.x < mAB.x && C.y > mAB.y) {
-//   path.lineTo(C.x - k, C.y + k);
-// }
-// if (C.x < mAB.x && C.y < mAB.y) {
-//   path.lineTo(C.x - k, C.y - k);
-// }
